@@ -1,0 +1,32 @@
+﻿@model SignalRServer.Models.DB.Employee
+
+<div class="bg-primary m-1 p-1 text-white"><h4>Задачі: @Model.Name (@Model.Role.Name)</h4></div>
+
+<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+<table class="table table-sm table-bordered">
+	<tr>
+		<th>Ід </th>
+		<th>Опис задачі </th>
+	</tr>
+	@if (Model.Tasks.Count == 0)
+	{
+		<tr><td colspan="3" class="text-center">Задачі відсутні</td></tr>
+	}
+	else
+	{
+		foreach (var task in Model.Tasks)
+		{
+			<tr>
+				<td>@task.TaskId</td>
+				<td>@task.Name</td>
+				<td>
+					<form asp-action="Delete" asp-route-id="@task.TaskId" method="post">
+						<button type="submit" class="btn btn-sm btn-danger">Delete</button>
+					</form>
+				</td>
+			</tr>
+		}
+	}
+</table>
+<a class="btn btn-primary" asp-action="CreateTaskView" asp-route-id="@Model.EmployeeId">Create</a>
