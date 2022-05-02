@@ -8,32 +8,8 @@ namespace SignalRServer.Models.DB
 
     public class EmployeeDTO
     {
-        //public EmployeeDTO() { }
-
-        //public EmployeeDTO(Employee employee)
-        //{
-        //    this.EmployeeId = employee.EmployeeId;
-        //    this.Name = employee.Name;
-
-        //    this.Role = new RoleDTO()
-        //    {
-        //        RoleId = employee.IdRole,
-        //        Name = employee.Name
-        //    };
-
-        //    if (employee.Tasks != null)
-        //    {
-        //        foreach (var task in employee.Tasks)
-        //        {
-        //            this.Tasks = new List<TaskEmployee>();
-        //        }
-        //    }
-        //}
-
-
         public long EmployeeId { get; set; }
-
-        
+                
         public string Name { get; set; }
         
         public long IdRole { get; set; }
@@ -50,7 +26,7 @@ namespace SignalRServer.Models.DB
 
         public string Name { get; set; }
 
-        //public virtual IList<Employee> Employees { get; set; }
+        public string Description { get; set; }
 
     }
 
@@ -60,12 +36,9 @@ namespace SignalRServer.Models.DB
 
         public long TaskId { get; set; }
 
-
         public string Name { get; set; }
 
         public long IdEmployee { get; set; }
-
-        //public virtual Employee Employee { get; set; }
 
     }
 

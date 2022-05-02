@@ -16,6 +16,10 @@ namespace SignalRServer.Models.DB
             
             CreateMap<RoleEmployee, RoleDTO>();
             CreateMap<TaskEmployee, TaskDTO>();
+
+            CreateMap<TaskDTO, TaskEmployee>()
+                .ForMember(task => task.Name, x=> x.MapFrom(x => x.Name))
+                .ForMember(task => task.IdEmployee, x => x.MapFrom(x => x.IdEmployee));
         }
     }
 }

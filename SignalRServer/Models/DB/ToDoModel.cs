@@ -33,6 +33,9 @@ namespace SignalRServer.Models.DB
         [Column("name")]
         public string Name { get; set; }
 
+        [Column("description")]
+        public string Description { get; set; }
+
         public virtual ICollection<Employee> Employees { get; set; }
 
     }
