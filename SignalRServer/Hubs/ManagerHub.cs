@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,15 @@ namespace SignalRServer.Hubs
 {
     public class ManagerHub
     {
-        public List<UserHub> Users { get; } = new List<UserHub>();
+        //private readonly IHubContext<NotificationHub> _hubContext;
+
+        //public ManagerHub(IHubContext<NotificationHub> hubContext)
+        //{
+        //    _hubContext = hubContext;
+        //}
+
+
+        public List<UserHub> Users { get; private set; } = new List<UserHub>();
 
         public void ConnectUser(string userName, string connectionId)
         {
@@ -20,6 +29,10 @@ namespace SignalRServer.Hubs
             var user = new UserHub(userName);
             user.AddConnection(connectionId);
             Users.Add(user);
+
+            //_hubContext
+
+
         }
 
         public bool DisconnectUser(string connectionId)

@@ -23,6 +23,7 @@ namespace SignalRWinFormsClient
         public ToDoForm()
         {
             InitializeComponent();
+
         }
 
         private void ToDo_Load(object sender, EventArgs e)
@@ -46,14 +47,22 @@ namespace SignalRWinFormsClient
 
             //_connection.On<string, string>("broadcastMessage", (s1, s2) => OnSend(s1, s2));
 
-            _connection.On<string, string>("broadcastMessage", (s1, s2) => OnSend(s1, s2));
+            //_connection.On<string, string>("broadcastMessage", (s1, s2) => OnSend(s1, s2));
 
-            _connection.On<string>("ReceiveConnID", (connId) => OnSend(connId));
+            //_connection.On<string, string>("RegisterUser", (s1, s2) => OnRegisterUser(s1));
+
+            _connection.On<string>("GetConnectionId", (connId) => OnSend(connId));
+
+            _connection.On<string>("HelloServer", (message) => OnHelloServer(message));
+
+
 
             Log(Color.Gray, "Starting connection...");
             try
             {
                 await _connection.StartAsync();
+
+                await _connection.InvokeAsync("RegisterUser", comboBox1.Text);
             }
             catch (Exception ex)
             {
@@ -61,11 +70,24 @@ namespace SignalRWinFormsClient
                 return;
             }
 
-            Log(Color.Gray, "Connection established.");
+            //Log(Color.Gray, "Connection established.");
 
             UpdateState(connected: true);
 
             //messageTextBox.Focus();
+        }
+
+        private void OnHelloServer(string message)
+        {
+            Invoke(new Action (async () =>
+            {
+                MessageBox.Show("Для Вас додалася ще одна задача!" + "\n" + "Задача: " + message);
+
+                await GetTasks(comboBox1.Text);
+
+                listBox1.Items.Add(message);
+                //messagesList.Items.Add(new LogMessage(color, message));
+            }));
         }
 
         private async void disconnectButton_Click(object sender, EventArgs e)
@@ -74,6 +96,7 @@ namespace SignalRWinFormsClient
             try
             {
                 await _connection.StopAsync();
+
             }
             catch (Exception ex)
             {
@@ -94,7 +117,7 @@ namespace SignalRWinFormsClient
         {
             try
             {
-                await _connection.InvokeAsync("Send", "txtUserName", "messageTextBox.Text");
+                //await _connection.InvokeAsync("Send", "txtUserName", "messageTextBox.Text");
             }
             catch (Exception ex)
             {
@@ -122,15 +145,17 @@ namespace SignalRWinFormsClient
 	        Invoke(callback);
         }
 
-        private void OnSend(string name, string message)
-        {
-            Log(Color.Black, name + ": " + message);
-        }
+
+        //private void OnRegisterUser(string name, string message)
+        //{
+        //    Log(Color.Black, name + ": " + message);
+        //}
 
         private void Log(Color color, string message)
         {
             Action callback = () =>
             {
+                //listBox1.Items.Add(message);
                 //messagesList.Items.Add(new LogMessage(color, message));
             };
 
@@ -162,22 +187,7 @@ namespace SignalRWinFormsClient
 
         private async void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            HttpClient client = new HttpClient();
-
-            var streamTask = await client.GetStreamAsync("http://localhost:55001/api/ToDo/GetEmployees");
-
-            var serializeOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-            var employees = await JsonSerializer.DeserializeAsync<List<EmployeeDTO>>(streamTask, serializeOptions);
-
-            var tasks = employees.Single(emp => emp.Name == comboBox1.Text).Tasks;
-
-            dataGridView1.DataSource = tasks;
-
-            //var client = new RestClient($"http://localhost:55001/api/ToDo/tasksAsync/{comboBox1.Text}");
+            
 
         }
 
@@ -205,62 +215,53 @@ namespace SignalRWinFormsClient
             //var response = client.Execute<List<Employee>>(request);
         }
 
-        private async void button2_Click(object sender, EventArgs e)
+        private async void getTasks_Click(object sender, EventArgs e)
         {
-            //var client = new RestClient($"http://localhost:55001/api/ToDo/GetEmployees");
-            //_httpClient.ExecuteAsGet<List<EmployeeDTO>>();
+            await GetTasks(comboBox1.Text);
+        }
+
+        private async void button3_Click(object sender, EventArgs e)
+        {
             HttpClient client = new HttpClient();
 
-            var streamTask = client.GetStreamAsync("http://localhost:55001/api/ToDo/GetEmployees");
+            var streamTask = await client.GetStreamAsync("http://localhost:55001/api/ToDo/GetEmployees");
 
             var serializeOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
-            var employees = await JsonSerializer.DeserializeAsync<List<EmployeeDTO>>(await streamTask, serializeOptions);
+            var employees = await JsonSerializer.DeserializeAsync<List<EmployeeDTO>>(streamTask, serializeOptions);
 
             var tasks = employees.Single(emp => emp.Name == comboBox1.Text).Tasks;
 
             dataGridView1.DataSource = tasks;
 
-            //dataGridView1.DataSource = employees.Where(emp => emp.Name == comboBox1.Text)
-            //    .Select(emp => new { TaskId = emp.    });
+            //var client = new RestClient($"http://localhost:55001/api/ToDo/tasksAsync/{comboBox1.Text}");
+        }
 
-            //var uri = new UriBuilder(_configuration["FullContact:Uri-person-enrich"]).Uri;
-            //var request = new HttpRequestMessage(HttpMethod.Get, "");
-
-            //request.Headers.Add("Authorization", $"Bearer {_configuration["FullContact:Key"]}");
-            //request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            //request.Content = new StringContent($"{{\"email\": \"{email}\"}}");
-            //request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
+        private async Task GetTasks(string userName)
+        {
+            HttpClient client = new HttpClient();
 
             try
             {
-                //var response = null; //await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                //if (!response.IsSuccessStatusCode)
-                //{
-                //    switch (response.StatusCode)
-                //    {
-                //        case System.Net.HttpStatusCode.NotFound:
-                //            break;
-                //        case System.Net.HttpStatusCode.BadRequest:
-                //            break;
-                //        case System.Net.HttpStatusCode.Unauthorized:
-                //            break;
-                //    }
-                //    response.EnsureSuccessStatusCode();
-                //}
-                //var stream = await response.Content.ReadAsStreamAsync();
-                //var model = stream.ReadAndDeserializeFromJson<FullContactPersonSummaryResponse>();
+                var streamTask = client.GetStreamAsync("http://localhost:55001/api/ToDo/GetEmployees");
 
-                //return model;
+                var serializeOptions = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+                var employees = await JsonSerializer.DeserializeAsync<List<EmployeeDTO>>(await streamTask, serializeOptions);
+
+                var tasks = employees.Single(emp => emp.Name == userName).Tasks;
+
+                dataGridView1.DataSource = tasks;
             }
             catch (Exception ex)
             {
-                throw;
+                MessageBox.Show(ex.Message);
             }
         }
     }

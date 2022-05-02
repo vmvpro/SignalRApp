@@ -7,27 +7,49 @@ using System.Threading.Tasks;
 using AutoMapper;
 using SignalRServer.Models;
 using SignalRServer.Models.DB;
+using SignalRServer.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace SignalRServer.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly string addressUrl = "http://localhost:55001/notification";
+
+        
         //private IRepository _repository;
         private ToDoDbRepository _repository;
         private IMapper _mapper;
+        //private NotificationHub _hub;
+        private ManagerHub _managerHub;
+
+        //private readonly IHubContext<ICommunicationHub> _hub;
+
+        private readonly IHubContext<NotificationHub> _hubContext;
 
         //private Repository_<Employee> _employeeRepository;
         //private Repository_<RoleEmployee> _roleRepositor;
         //private Repository_<TaskEmployee> _taskRepository;
 
-        public AdminController(ToDoDbRepository repository,
-                IMapper mapper)
+        public AdminController(
+            ToDoDbRepository repository,
+                IMapper mapper,
+                //NotificationHub hub
+                IHubContext<NotificationHub> hubContext,
+                //IHubContext<ICommunicationHub> hub,
+                ManagerHub managerHub
+            )
         //Repository_<Employee> employeeRepository,
         //Repository_<RoleEmployee> roleRepository,
         //Repository_<TaskEmployee> taskRepository)
         {
             _repository = repository;
             _mapper = mapper;
+
+            _hubContext = hubContext;
+
+            //_hub = hub;
+            _managerHub = managerHub;
 
             //_employeeRepository = employeeRepository;
             //_roleRepositor = roleRepository;
@@ -36,10 +58,24 @@ namespace SignalRServer.Controllers
         }
 
         // GET: AdminController
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var listEmployees = _repository.Employees;
             //var listEmployees = _employeeRepository.GetAll().ToList();
+
+            //--------------
+            //await _hubContext.Clients.All.SendAsync("HelloServer", "Hello of server");
+            //--------------
+            //var connections = _managerHub.Users.Single(user => user.UserName == "emp2");
+
+            //foreach (var conn in connections)
+            //{
+            //    //_hub.Clients.Clients<>
+
+            //}
+            //--------------
+
+
             return View(listEmployees);
         }
 
@@ -81,12 +117,32 @@ namespace SignalRServer.Controllers
         // POST: AdminController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateTask(TaskEmployee task)
+        public async Task<ActionResult> CreateTask([FromForm]TaskEmployee task)
         {
             try
             {
                 await _repository.AddTaskForEmployee(task);
                 await _repository.SaveAsync();
+
+                var emp = _repository.Employees.SingleOrDefault(emp => emp.EmployeeId == task.IdEmployee);
+
+                //await _hubContext.Clients.Client(conn.).SendAsync("", "");
+
+                var connections = _managerHub.Users.Single(user => user.UserName == emp.Name).ConnectionsHub;
+
+                foreach (var conn in connections)
+                {
+                    await _hubContext.Clients.Client(conn.ConnectionId).SendAsync("HelloServer", task.Name);
+
+                }
+
+                
+                //await _hubContext.Clients.All.SendAsync("HelloServer", task.Name);
+
+
+
+
+
 
                 return RedirectToAction(nameof(Tasks), "Admin", new { id = task.IdEmployee });
             }

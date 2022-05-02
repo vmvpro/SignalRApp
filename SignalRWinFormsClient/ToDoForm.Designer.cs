@@ -37,13 +37,15 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.button3 = new System.Windows.Forms.Button();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
             // 
             this.connectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.connectButton.Location = new System.Drawing.Point(408, 9);
+            this.connectButton.Location = new System.Drawing.Point(408, 12);
             this.connectButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(88, 27);
@@ -66,7 +68,7 @@
             // 
             this.disconnectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.disconnectButton.Enabled = false;
-            this.disconnectButton.Location = new System.Drawing.Point(502, 9);
+            this.disconnectButton.Location = new System.Drawing.Point(629, 9);
             this.disconnectButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.disconnectButton.Name = "disconnectButton";
             this.disconnectButton.Size = new System.Drawing.Size(88, 27);
@@ -117,11 +119,11 @@
             // 
             this.button2.Location = new System.Drawing.Point(485, 135);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(97, 23);
             this.button2.TabIndex = 11;
-            this.button2.Text = "button2";
+            this.button2.Text = "GetTasks";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.getTasks_Click);
             // 
             // dataGridView1
             // 
@@ -132,11 +134,32 @@
             this.dataGridView1.Size = new System.Drawing.Size(450, 147);
             this.dataGridView1.TabIndex = 12;
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(502, 52);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(121, 26);
+            this.button3.TabIndex = 13;
+            this.button3.Text = "ConnectionUser";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 15;
+            this.listBox1.Location = new System.Drawing.Point(14, 299);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(450, 154);
+            this.listBox1.TabIndex = 14;
+            // 
             // ToDoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(604, 539);
+            this.ClientSize = new System.Drawing.Size(731, 539);
+            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -166,6 +189,8 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }
 

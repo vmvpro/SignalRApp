@@ -57,12 +57,16 @@ namespace SignalRServer
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 			
-			services.AddSingleton<ManagerHub>();
+			
 			
 
 
 			services.AddCors();
+
 			services.AddSignalR();
+			//services.AddScoped<ManagerHub>();
+			services.AddSingleton<ManagerHub>();
+
 			services.AddControllersWithViews();
 		}
 
