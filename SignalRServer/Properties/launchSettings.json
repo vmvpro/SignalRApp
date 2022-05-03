@@ -7,14 +7,15 @@
       "sslPort": 44312
     }
   },
-    "profiles": {
-        "SignalRServer": {
-            "commandName": "Project",
-            "launchBrowser": true,
-            "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "applicationUrl": "http://localhost:55001"
-        }
+  "profiles": {
+    "SignalRServer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:55001/Home/Index",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:55001"
     }
+  }
 }

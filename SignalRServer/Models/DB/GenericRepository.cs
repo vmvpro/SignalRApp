@@ -4,11 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using SignalRServer.Models;
 
-namespace SignalRServer.Data
+namespace SignalRServer.Models.DB
 {
-    public interface IRepository_<TEntity> where TEntity : class
+    public interface IRepositoryGeneric<TEntity> where TEntity : class
     {
         IEnumerable<TEntity> GetAll();
         IEnumerable<TEntity> GetByWhere(Expression<Func<TEntity, bool>> predicate);
@@ -21,12 +20,12 @@ namespace SignalRServer.Data
     }
 
 
-    public class Repository_<TEntity> : IRepository_<TEntity> where TEntity : class
+    public class RepositoryGeneric<TEntity> : IRepositoryGeneric<TEntity> where TEntity : class
     {
         private readonly ToDoDbContext _dbContext;
         internal DbSet<TEntity> _dbSet;
 
-        public Repository_(ToDoDbContext dbContext)
+        public RepositoryGeneric(ToDoDbContext dbContext)
         {
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();

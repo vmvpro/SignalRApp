@@ -7,15 +7,15 @@ using AutoMapper;
 using SignalRServer.Models;
 using SignalRServer.Models.DB;
 using SignalRServer.Models.Responce;
-
+using Microsoft.AspNetCore.Http;
 
 namespace SignalRServer.Controllers
 {
+
 	[Route("api/[controller]")]
 	[ApiController]
 	public class ToDoController : ControllerBase
 	{
-
         private IMapper _mapper;
 
         //private IRepository _repository;
@@ -27,7 +27,6 @@ namespace SignalRServer.Controllers
 
         public ToDoController(
             IMapper mapper,
-            //IRepository repository, 
             ToDoDbRepository repository, 
             IToDoDbContext dbContext, 
             IDapperReadDbConnection readDbConnection, 
@@ -41,13 +40,21 @@ namespace SignalRServer.Controllers
             _repository = repository;
 		}
         
-
+        /// <summary>
+        /// Метод для перевірки Web API
+        /// </summary>
+        /// <returns></returns>
 		[HttpGet("GetString")]
 		public async Task<string> GetString()
 		{
 			return await Task.FromResult("OK");
 		}
 
+        /// <summary>
+        /// Отримання всіх існуючик задач співробітника по його імені
+        /// </summary>
+        /// <param name="userName">Ім'я співробітника</param>
+        /// <returns></returns>
         [HttpGet("tasksAsync/{userName}") ]
         public async Task<dynamic> GetAllTasksForEmployeeAsync(string userName)
         {
@@ -124,7 +131,11 @@ namespace SignalRServer.Controllers
         //	return repository.Roles;
         //}
 
-        [HttpGet("GetEmployees")]
+        /// <summary>
+        /// Отримання всіх співробітників з прилежними властивостями
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getEmployees")]
 		public async Task<List<EmployeeDTO>> GetEmployees()
         {
             var employees = await _repository.GetAllEmployees();
@@ -133,54 +144,58 @@ namespace SignalRServer.Controllers
            
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllOwners()
-        //{
-        //    try
-        //    {
-        //        var owners = await _repository.Owner.GetAllOwnersAsync();
-        //        _logger.LogInfo($"Returned all owners from database.");
-        //        var ownersResult = _mapper.Map<IEnumerable<OwnerDto>>(owners);
-        //        return Ok(ownersResult);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Something went wrong inside GetAllOwners action: {ex.Message}");
-        //        return StatusCode(500, "Internal server error");
-        //    }
-        //}
+        /// <summary>
+        /// Отримання співробітника по імені
+        /// </summary>
+        /// <param name="name">Ім'я спіробітника</param>
+        /// <returns></returns>
+        [HttpGet("getEmployee/{name}")]
+        public async Task<EmployeeDTO> GetEmployee(string name)
+        {
+            var employee = await _repository.GetEmployee(name);
 
-        // GET: api/<WebApiController>
-        [HttpGet ("Get")]
-		public IEnumerable<string> Get()
+            return _mapper.Map<Employee, EmployeeDTO>(employee);
+        }
+
+        /// <summary>
+        /// Створення нової задачі для конкретного співробітника
+        /// </summary>
+        /// <param name="taskDTO"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("employee/createTask")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> createTaskForEmployee([FromBody] TaskDTO taskDTO)
 		{
-			return new string[] { "value1", "value2" };
-		}
+            try
+            {
+                var taskEmployee = _mapper.Map<TaskDTO, TaskEmployee>(taskDTO);
+                await _repository.AddTaskForEmployee(taskEmployee);
+                _repository.Save();
 
-		// GET api/<WebApiController>/5
-		[HttpGet("{id}")]
-		public string Get(int id)
-		{
-			return "value";
-		}
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+        }
 
-		// POST api/<WebApiController>
-		[HttpPost]
-		public void Post([FromBody] string value)
-		{
+        /// <summary>
+        /// Оновлення існуючої задачі співробітника
+        /// </summary>
+        /// <param name="id">Ід задачі</param>
+        /// <param name="task">Об'єкт TaskDTO</param>
+		[HttpPut("employee/updateTask/{id}")]
+		public void Put(int id, [FromBody] TaskDTO task) { }
 
-		}
-
-		// PUT api/<WebApiController>/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
-		{
-		}
-
-		// DELETE api/<WebApiController>/5
-		[HttpDelete("{id}")]
-		public void Delete(int id)
-		{
-		}
+        /// <summary>
+        /// Видалення задачі співробітника
+        /// </summary>
+        /// <param name="id">Ід задачі</param>
+		[HttpDelete("employee/deleteTask/{id}")]
+		public void Delete(int id) { }
 	}
 }

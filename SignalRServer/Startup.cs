@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using SignalRServer.Hubs;
 using SignalRServer.Models;
 using SignalRServer.Models.DB;
@@ -19,6 +20,7 @@ namespace SignalRServer
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+
 		}
 
 		public IConfiguration Configuration { get; }
@@ -26,46 +28,53 @@ namespace SignalRServer
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+
+
             services.AddDbContext<ToDoDbContext>(options =>
 				options.UseSqlite(
-					//Configuration["Data:ConnectionString"],
                     ConfigurationDB.ConnectionString,
 					opts =>
 					{
 						opts.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName); 
-
 					}));
 
-			//services.AddTransient<Repository_<Employee>>();
-			//services.AddScoped<Repository_<RoleEmployee>>();
-			//services.AddScoped<Repository_<TaskEmployee>>();
+			services.AddTransient<ToDoDbRepository>();
+			
+			services.AddTransient<RepositoryGeneric<Employee>>();
+			services.AddScoped<RepositoryGeneric<RoleEmployee>>();
+			services.AddScoped<RepositoryGeneric<TaskEmployee>>();
 
 			services.AddScoped<IToDoDbContext>(provider => provider.GetService<ToDoDbContext>());
             services.AddScoped<IDapperWriteDbConnection, DapperWriteDbConnection>();
             services.AddScoped<IDapperReadDbConnection, DapperReadDbConnection>();
-			//services.AddControllers();
 
-			//services.AddTransient<IRepository, ToDoDbRepository>();
-
-            services.AddTransient<ToDoDbRepository>();
-
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
-
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
-			
-			
-			
-
+			ConfigureServicesMapping.ConfigureServices(services);
 
 			services.AddCors();
 
 			services.AddSignalR();
-			//services.AddScoped<ManagerHub>();
 			services.AddSingleton<ManagerHub>();
+
+			services.AddSwaggerGen(c =>
+			{
+				c.SwaggerDoc("signalR_v1", new OpenApiInfo
+                {
+                    Title = "SignalRApp",
+                    Version = "Ver. 1.0",
+                    Description = "REST API ToDo"
+                });
+                
+                c.CustomSchemaIds(x => x.FullName);
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                if (!File.Exists(xmlPath))
+                    Console.WriteLine($"File {xmlPath} not found");
+                
+                c.IncludeXmlComments(xmlPath);
+            });
+			//services.AddSwaggerGenNewtonsoftSupport();
 
 			services.AddControllersWithViews();
 		}
@@ -94,6 +103,15 @@ namespace SignalRServer
 
 			app.UseRouting();
 
+			app.UseSwagger();
+
+			// url: swagger/index
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/signalR_v1/swagger.json", "SignalRApp");
+				c.RoutePrefix = "swagger";
+			});
+
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
@@ -101,16 +119,22 @@ namespace SignalRServer
 				endpoints.MapControllers();
 				endpoints.MapDefaultControllerRoute();
 
-				//endpoints.MapControllerRoute(
-				//	name: "default",
-				//	pattern: "{controller=Home}/{action=Index}/{id?}");
+				endpoints.MapControllerRoute(
+					name: "default",
+					pattern: "{controller=Home}/{action=Index}/{id?}");
 
 				endpoints.MapHub<NotificationHub>("/notification");
+
+				//endpoints.MapControllerRoute(
+				//	name: "swagger",
+				//	pattern: "swagger/{action}");
 
 				endpoints.MapControllerRoute(name: "blog",
 					pattern: "api/{controller}/{action}/{id?}",
 					defaults: new { controller = "ToDo", action = "GetString" });
 			});
+
+
 		}
 	}
 }

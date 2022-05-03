@@ -17,7 +17,6 @@ namespace SignalRServer.Models.DB
 
         void AddEmployee(Employee emp);
 
-
         void Save();
 
     }
@@ -32,14 +31,19 @@ namespace SignalRServer.Models.DB
 
         public async Task<IEnumerable<Employee>> GetAllEmployees()
         {
-            //return await _context.Employees.ToListAsync();
-
             return await _context.Employees
                 .Include(r => r.Role)
                 .Include(t => t.Tasks)
                 .ToListAsync();
         }
 
+        public async Task<Employee> GetEmployee(string name)
+        {
+            return await _context.Employees
+                .Include(r => r.Role)
+                .Include(t => t.Tasks)
+                .SingleAsync(emp => emp.Name == name);
+        }
 
         public IEnumerable<Employee> Employees  => _context.Employees
             .Include(r=>r.Role)
@@ -47,36 +51,20 @@ namespace SignalRServer.Models.DB
 
         public IEnumerable<RoleEmployee> Roles => _context.Roles
             .Include(e => e.Employees);
+
         public IEnumerable<TaskEmployee> Tasks => _context.Tasks
             .Include(e => e.Employee);
 
-        public void AddEmployee(Employee emp)
-        {
-            _context.Employees.Add(emp);
-        }
-
-        public async Task AddTaskForEmployee(TaskEmployee task)
-        {
+        public async Task AddEmployee(Employee emp) =>
+            await _context.Employees.AddAsync(emp);
+        
+        public async Task AddTaskForEmployee(TaskEmployee task) =>
             await _context.Tasks.AddAsync(task);
-
-            //var currentEmp = await _context.Employees
-            //    .Where(emp => emp.EmployeeId == task.IdEmployee)
-            //    .SingleOrDefaultAsync();
-
-            //currentEmp.Tasks.Add(task);
-
-
-        }
-
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
-
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+        
+        public void Save() => _context.SaveChanges();   
+        
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
+        
     }
 
 }

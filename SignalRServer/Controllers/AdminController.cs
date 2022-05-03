@@ -9,77 +9,56 @@ using SignalRServer.Models;
 using SignalRServer.Models.DB;
 using SignalRServer.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SignalRServer.Controllers
 {
+
+    //[Authorize]
     public class AdminController : Controller
     {
         private readonly string addressUrl = "http://localhost:55001/notification";
 
-        
-        //private IRepository _repository;
         private ToDoDbRepository _repository;
         private IMapper _mapper;
-        //private NotificationHub _hub;
         private ManagerHub _managerHub;
-
-        //private readonly IHubContext<ICommunicationHub> _hub;
 
         private readonly IHubContext<NotificationHub> _hubContext;
 
-        //private Repository_<Employee> _employeeRepository;
+        private RepositoryGeneric<Employee> _employeeRepository;
         //private Repository_<RoleEmployee> _roleRepositor;
         //private Repository_<TaskEmployee> _taskRepository;
 
         public AdminController(
-            ToDoDbRepository repository,
+                ToDoDbRepository repository,
+                RepositoryGeneric<Employee> employeeRepository,
                 IMapper mapper,
-                //NotificationHub hub
                 IHubContext<NotificationHub> hubContext,
-                //IHubContext<ICommunicationHub> hub,
                 ManagerHub managerHub
             )
-        //Repository_<Employee> employeeRepository,
-        //Repository_<RoleEmployee> roleRepository,
-        //Repository_<TaskEmployee> taskRepository)
         {
             _repository = repository;
+
+            _employeeRepository = employeeRepository;
+            //_roleRepositor = roleRepository;
+            //_taskRepository = taskRepository;
+
             _mapper = mapper;
 
             _hubContext = hubContext;
 
-            //_hub = hub;
             _managerHub = managerHub;
-
-            //_employeeRepository = employeeRepository;
-            //_roleRepositor = roleRepository;
-            //_taskRepository = taskRepository;
 
         }
 
-        // GET: AdminController
         public async Task<ActionResult> Index()
         {
             var listEmployees = _repository.Employees;
             //var listEmployees = _employeeRepository.GetAll().ToList();
 
-            //--------------
-            //await _hubContext.Clients.All.SendAsync("HelloServer", "Hello of server");
-            //--------------
-            //var connections = _managerHub.Users.Single(user => user.UserName == "emp2");
-
-            //foreach (var conn in connections)
-            //{
-            //    //_hub.Clients.Clients<>
-
-            //}
-            //--------------
-
-
             return View(listEmployees);
         }
 
-        // GET: AdminController/Details/5
         public ActionResult Tasks(int id)
         {
             var emp = _repository.Employees.SingleOrDefault(emp => emp.EmployeeId == id);
@@ -87,14 +66,13 @@ namespace SignalRServer.Controllers
             return View(emp);
         }
 
-        // POST: AdminController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateEmployee(Employee employee)
+        public async Task<ActionResult> CreateEmployee(Employee employee)
         {
             try
             {
-                //_employeeRepository.CreateAsync(employee).GetAwaiter().GetResult();
+                await _employeeRepository.CreateAsync(employee);
                 //_repository.Employees.Add(employee);
                 //_repository.Save();
 
@@ -106,18 +84,16 @@ namespace SignalRServer.Controllers
             }
         }
 
-        public ActionResult CreateTaskView(int id)
+        public async Task<ActionResult> CreateTaskView(int id)
         {
             var emp = _repository.Employees.SingleOrDefault(emp => emp.EmployeeId == id);
             var task = new TaskEmployee() { Employee = emp };
             return View(task);
         }
-        
 
-        // POST: AdminController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateTask([FromForm]TaskEmployee task)
+        public async Task<ActionResult> CreateTask([FromForm] TaskEmployee task)
         {
             try
             {
@@ -126,24 +102,11 @@ namespace SignalRServer.Controllers
 
                 var emp = _repository.Employees.SingleOrDefault(emp => emp.EmployeeId == task.IdEmployee);
 
-                //await _hubContext.Clients.Client(conn.).SendAsync("", "");
-
                 var connections = _managerHub.Users.Single(user => user.UserName == emp.Name).ConnectionsHub;
 
                 foreach (var conn in connections)
-                {
-                    await _hubContext.Clients.Client(conn.ConnectionId).SendAsync("HelloServer", task.Name);
-
-                }
-
+                    await _hubContext.Clients.Client(conn.ConnectionId).SendAsync("NotificationTask", task.Name);
                 
-                //await _hubContext.Clients.All.SendAsync("HelloServer", task.Name);
-
-
-
-
-
-
                 return RedirectToAction(nameof(Tasks), "Admin", new { id = task.IdEmployee });
             }
             catch
@@ -152,7 +115,6 @@ namespace SignalRServer.Controllers
             }
         }
 
-        // POST: AdminController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -167,14 +129,11 @@ namespace SignalRServer.Controllers
             }
         }
 
-        // GET: AdminController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
-        
 
-        // POST: AdminController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

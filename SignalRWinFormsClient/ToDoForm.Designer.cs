@@ -28,31 +28,24 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.connectButton = new System.Windows.Forms.Button();
+            this.components = new System.ComponentModel.Container();
             this.lblUserName = new System.Windows.Forms.Label();
             this.disconnectButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtConnId = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.button3 = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.btnTasksAll = new System.Windows.Forms.Button();
+            this.dgvTasks = new System.Windows.Forms.DataGridView();
+            this.txtEmployeeName = new System.Windows.Forms.TextBox();
+            this.btnAddTask = new System.Windows.Forms.Button();
+            this.btnEditTask = new System.Windows.Forms.Button();
+            this.btnTaskDelete = new System.Windows.Forms.Button();
+            this.taskDTOBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.taskIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idEmployeeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTasks)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.taskDTOBindingSource)).BeginInit();
             this.SuspendLayout();
-            // 
-            // connectButton
-            // 
-            this.connectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.connectButton.Location = new System.Drawing.Point(408, 12);
-            this.connectButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(88, 27);
-            this.connectButton.TabIndex = 1;
-            this.connectButton.Text = "Connect";
-            this.connectButton.UseVisualStyleBackColor = true;
-            this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
             // 
             // lblUserName
             // 
@@ -60,9 +53,9 @@
             this.lblUserName.Location = new System.Drawing.Point(14, 15);
             this.lblUserName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblUserName.Name = "lblUserName";
-            this.lblUserName.Size = new System.Drawing.Size(65, 15);
+            this.lblUserName.Size = new System.Drawing.Size(111, 15);
             this.lblUserName.TabIndex = 2;
-            this.lblUserName.Text = "UserName:";
+            this.lblUserName.Text = "Ім\'я співробітника:";
             // 
             // disconnectButton
             // 
@@ -75,7 +68,6 @@
             this.disconnectButton.TabIndex = 6;
             this.disconnectButton.Text = "Disconnect";
             this.disconnectButton.UseVisualStyleBackColor = true;
-            this.disconnectButton.Click += new System.EventHandler(this.disconnectButton_Click);
             // 
             // label2
             // 
@@ -93,104 +85,135 @@
             this.txtConnId.Size = new System.Drawing.Size(297, 23);
             this.txtConnId.TabIndex = 8;
             // 
-            // comboBox1
+            // btnTasksAll
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "emp1",
-            "emp2"});
-            this.comboBox1.Location = new System.Drawing.Point(86, 12);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(297, 23);
-            this.comboBox1.TabIndex = 9;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.btnTasksAll.Location = new System.Drawing.Point(479, 87);
+            this.btnTasksAll.Name = "btnTasksAll";
+            this.btnTasksAll.Size = new System.Drawing.Size(97, 23);
+            this.btnTasksAll.TabIndex = 11;
+            this.btnTasksAll.Text = "Всі задачі";
+            this.btnTasksAll.UseVisualStyleBackColor = true;
+            this.btnTasksAll.Click += new System.EventHandler(this.getTasks_Click);
             // 
-            // button1
+            // dgvTasks
             // 
-            this.button1.Location = new System.Drawing.Point(408, 52);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.dgvTasks.AutoGenerateColumns = false;
+            this.dgvTasks.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvTasks.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvTasks.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.taskIdDataGridViewTextBoxColumn,
+            this.nameDataGridViewTextBoxColumn,
+            this.idEmployeeDataGridViewTextBoxColumn});
+            this.dgvTasks.DataSource = this.taskDTOBindingSource;
+            this.dgvTasks.Location = new System.Drawing.Point(14, 87);
+            this.dgvTasks.Name = "dgvTasks";
+            this.dgvTasks.RowTemplate.Height = 25;
+            this.dgvTasks.Size = new System.Drawing.Size(450, 147);
+            this.dgvTasks.TabIndex = 12;
             // 
-            // button2
+            // txtEmployeeName
             // 
-            this.button2.Location = new System.Drawing.Point(485, 135);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(97, 23);
-            this.button2.TabIndex = 11;
-            this.button2.Text = "GetTasks";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.getTasks_Click);
+            this.txtEmployeeName.Location = new System.Drawing.Point(132, 12);
+            this.txtEmployeeName.Name = "txtEmployeeName";
+            this.txtEmployeeName.ReadOnly = true;
+            this.txtEmployeeName.Size = new System.Drawing.Size(251, 23);
+            this.txtEmployeeName.TabIndex = 15;
             // 
-            // dataGridView1
+            // btnAddTask
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(14, 135);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 25;
-            this.dataGridView1.Size = new System.Drawing.Size(450, 147);
-            this.dataGridView1.TabIndex = 12;
+            this.btnAddTask.Location = new System.Drawing.Point(479, 116);
+            this.btnAddTask.Name = "btnAddTask";
+            this.btnAddTask.Size = new System.Drawing.Size(97, 25);
+            this.btnAddTask.TabIndex = 16;
+            this.btnAddTask.Text = "Додати";
+            this.btnAddTask.UseVisualStyleBackColor = true;
+            this.btnAddTask.Click += new System.EventHandler(this.btnAddTask_Click);
             // 
-            // button3
+            // btnEditTask
             // 
-            this.button3.Location = new System.Drawing.Point(502, 52);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(121, 26);
-            this.button3.TabIndex = 13;
-            this.button3.Text = "ConnectionUser";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnEditTask.Location = new System.Drawing.Point(479, 147);
+            this.btnEditTask.Name = "btnEditTask";
+            this.btnEditTask.Size = new System.Drawing.Size(97, 25);
+            this.btnEditTask.TabIndex = 17;
+            this.btnEditTask.Text = "Редагувати";
+            this.btnEditTask.UseVisualStyleBackColor = true;
+            this.btnEditTask.Click += new System.EventHandler(this.btnTaskEdit_Click);
             // 
-            // listBox1
+            // btnTaskDelete
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(14, 299);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(450, 154);
-            this.listBox1.TabIndex = 14;
+            this.btnTaskDelete.Location = new System.Drawing.Point(479, 178);
+            this.btnTaskDelete.Name = "btnTaskDelete";
+            this.btnTaskDelete.Size = new System.Drawing.Size(97, 25);
+            this.btnTaskDelete.TabIndex = 18;
+            this.btnTaskDelete.Text = "Видалити";
+            this.btnTaskDelete.UseVisualStyleBackColor = true;
+            this.btnTaskDelete.Click += new System.EventHandler(this.btnDeleteTask_Click);
+            // 
+            // taskDTOBindingSource
+            // 
+            this.taskDTOBindingSource.DataSource = typeof(SignalRServer.Models.DB.TaskDTO);
+            // 
+            // taskIdDataGridViewTextBoxColumn
+            // 
+            this.taskIdDataGridViewTextBoxColumn.DataPropertyName = "TaskId";
+            this.taskIdDataGridViewTextBoxColumn.HeaderText = "TaskId";
+            this.taskIdDataGridViewTextBoxColumn.Name = "taskIdDataGridViewTextBoxColumn";
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            // 
+            // idEmployeeDataGridViewTextBoxColumn
+            // 
+            this.idEmployeeDataGridViewTextBoxColumn.DataPropertyName = "IdEmployee";
+            this.idEmployeeDataGridViewTextBoxColumn.HeaderText = "IdEmployee";
+            this.idEmployeeDataGridViewTextBoxColumn.Name = "idEmployeeDataGridViewTextBoxColumn";
+            this.idEmployeeDataGridViewTextBoxColumn.Visible = false;
             // 
             // ToDoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(731, 539);
-            this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.comboBox1);
+            this.ClientSize = new System.Drawing.Size(731, 273);
+            this.Controls.Add(this.btnTaskDelete);
+            this.Controls.Add(this.btnEditTask);
+            this.Controls.Add(this.btnAddTask);
+            this.Controls.Add(this.txtEmployeeName);
+            this.Controls.Add(this.dgvTasks);
+            this.Controls.Add(this.btnTasksAll);
             this.Controls.Add(this.txtConnId);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.disconnectButton);
             this.Controls.Add(this.lblUserName);
-            this.Controls.Add(this.connectButton);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "ToDoForm";
             this.Text = "SignalR ToDo Task";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ToDoForm_FormClosed);
             this.Load += new System.EventHandler(this.ToDo_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvTasks)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.taskDTOBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
 		}
 
 		#endregion
-		private System.Windows.Forms.Button connectButton;
 		private System.Windows.Forms.Label lblUserName;
 		private System.Windows.Forms.Button disconnectButton;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox txtConnId;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Button btnTasksAll;
+        private System.Windows.Forms.DataGridView dgvTasks;
+        private System.Windows.Forms.TextBox txtEmployeeName;
+        private System.Windows.Forms.Button btnAddTask;
+        private System.Windows.Forms.Button btnEditTask;
+        private System.Windows.Forms.Button btnTaskDelete;
+        private System.Windows.Forms.BindingSource taskDTOBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn taskIdDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn idEmployeeDataGridViewTextBoxColumn;
     }
 }
 
