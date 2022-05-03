@@ -17,6 +17,11 @@ namespace SignalRWinFormsClient
         private HubConnection _connection;
         private EmployeeDTO _employeeDTO;
 
+        public ToDoForm()
+        {
+            InitializeComponent();
+        }
+
         public ToDoForm(string employeeName, HubConnection connection)
         {
             InitializeComponent();

@@ -16,8 +16,7 @@ namespace SignalRServer.Hubs
 
         public string UserName { get;}  
         public IEnumerable<ConnectionHub> ConnectionsHub { get => _connections; }
-        //public IEnumerable<string> Roles { get; set; }
-
+        
         public void AddConnection(string connectionId)
         {
             if (connectionId == null)

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SignalRServer.Models.DB
 {
 
-    public interface _IRepository
+    public interface IRepository
     {
         IEnumerable<Employee> Employees { get; }
 

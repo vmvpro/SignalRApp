@@ -30,19 +30,18 @@
 		{
             this.components = new System.ComponentModel.Container();
             this.lblUserName = new System.Windows.Forms.Label();
-            this.disconnectButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.txtConnId = new System.Windows.Forms.TextBox();
             this.btnTasksAll = new System.Windows.Forms.Button();
             this.dgvTasks = new System.Windows.Forms.DataGridView();
+            this.taskIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.idEmployeeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.taskDTOBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.txtEmployeeName = new System.Windows.Forms.TextBox();
             this.btnAddTask = new System.Windows.Forms.Button();
             this.btnEditTask = new System.Windows.Forms.Button();
             this.btnTaskDelete = new System.Windows.Forms.Button();
-            this.taskDTOBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.taskIdDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.idEmployeeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTasks)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.taskDTOBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -56,18 +55,6 @@
             this.lblUserName.Size = new System.Drawing.Size(111, 15);
             this.lblUserName.TabIndex = 2;
             this.lblUserName.Text = "Ім\'я співробітника:";
-            // 
-            // disconnectButton
-            // 
-            this.disconnectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.disconnectButton.Enabled = false;
-            this.disconnectButton.Location = new System.Drawing.Point(629, 9);
-            this.disconnectButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.disconnectButton.Name = "disconnectButton";
-            this.disconnectButton.Size = new System.Drawing.Size(88, 27);
-            this.disconnectButton.TabIndex = 6;
-            this.disconnectButton.Text = "Disconnect";
-            this.disconnectButton.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -97,6 +84,8 @@
             // 
             // dgvTasks
             // 
+            this.dgvTasks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.dgvTasks.AutoGenerateColumns = false;
             this.dgvTasks.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTasks.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -108,8 +97,31 @@
             this.dgvTasks.Location = new System.Drawing.Point(14, 87);
             this.dgvTasks.Name = "dgvTasks";
             this.dgvTasks.RowTemplate.Height = 25;
-            this.dgvTasks.Size = new System.Drawing.Size(450, 147);
+            this.dgvTasks.Size = new System.Drawing.Size(450, 232);
             this.dgvTasks.TabIndex = 12;
+            // 
+            // taskIdDataGridViewTextBoxColumn
+            // 
+            this.taskIdDataGridViewTextBoxColumn.DataPropertyName = "TaskId";
+            this.taskIdDataGridViewTextBoxColumn.HeaderText = "TaskId";
+            this.taskIdDataGridViewTextBoxColumn.Name = "taskIdDataGridViewTextBoxColumn";
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            // 
+            // idEmployeeDataGridViewTextBoxColumn
+            // 
+            this.idEmployeeDataGridViewTextBoxColumn.DataPropertyName = "IdEmployee";
+            this.idEmployeeDataGridViewTextBoxColumn.HeaderText = "IdEmployee";
+            this.idEmployeeDataGridViewTextBoxColumn.Name = "idEmployeeDataGridViewTextBoxColumn";
+            this.idEmployeeDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // taskDTOBindingSource
+            // 
+            this.taskDTOBindingSource.DataSource = typeof(SignalRServer.Models.DB.TaskDTO);
             // 
             // txtEmployeeName
             // 
@@ -149,34 +161,11 @@
             this.btnTaskDelete.UseVisualStyleBackColor = true;
             this.btnTaskDelete.Click += new System.EventHandler(this.btnDeleteTask_Click);
             // 
-            // taskDTOBindingSource
-            // 
-            this.taskDTOBindingSource.DataSource = typeof(SignalRServer.Models.DB.TaskDTO);
-            // 
-            // taskIdDataGridViewTextBoxColumn
-            // 
-            this.taskIdDataGridViewTextBoxColumn.DataPropertyName = "TaskId";
-            this.taskIdDataGridViewTextBoxColumn.HeaderText = "TaskId";
-            this.taskIdDataGridViewTextBoxColumn.Name = "taskIdDataGridViewTextBoxColumn";
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            // 
-            // idEmployeeDataGridViewTextBoxColumn
-            // 
-            this.idEmployeeDataGridViewTextBoxColumn.DataPropertyName = "IdEmployee";
-            this.idEmployeeDataGridViewTextBoxColumn.HeaderText = "IdEmployee";
-            this.idEmployeeDataGridViewTextBoxColumn.Name = "idEmployeeDataGridViewTextBoxColumn";
-            this.idEmployeeDataGridViewTextBoxColumn.Visible = false;
-            // 
             // ToDoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(731, 273);
+            this.ClientSize = new System.Drawing.Size(584, 331);
             this.Controls.Add(this.btnTaskDelete);
             this.Controls.Add(this.btnEditTask);
             this.Controls.Add(this.btnAddTask);
@@ -185,11 +174,10 @@
             this.Controls.Add(this.btnTasksAll);
             this.Controls.Add(this.txtConnId);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.disconnectButton);
             this.Controls.Add(this.lblUserName);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "ToDoForm";
-            this.Text = "SignalR ToDo Task";
+            this.Text = "SignalR Client ToDo Task";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ToDoForm_FormClosed);
             this.Load += new System.EventHandler(this.ToDo_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTasks)).EndInit();
@@ -201,7 +189,6 @@
 
 		#endregion
 		private System.Windows.Forms.Label lblUserName;
-		private System.Windows.Forms.Button disconnectButton;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox txtConnId;
         private System.Windows.Forms.Button btnTasksAll;

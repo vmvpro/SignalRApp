@@ -87,50 +87,6 @@ namespace SignalRServer.Controllers
 			return Ok(filterTasks);
         }
 
-        //[HttpGet("tasks/{userName}")]
-        //public dynamic GetAllTasksForEmployee(string userName)
-        //{
-        //    dynamic filterTasks = _repository.Tasks
-        //        .Where(t => t.Employee.Name == userName)
-        //        .Select(t => new
-        //        {
-        //            Id = t.Employee.EmployeeId,
-        //            Name = t.Employee.Name,
-        //            Role = t.Employee.Role.Name,
-        //            Task = t.Name,
-        //        });
-                
-        //    return Ok(filterTasks);
-        //}
-
-        //public async Task<IEnumerable<T>> GetAllTasksForUser_<T>(T typeObject,string userName)
-        //{
-
-        //    var query = $"SELECT employee_id as Id, Name FROM Employees";
-        //    var tasks = await _dbContext.Connection.Query(query,
-        //        () => typeObject);
-
-        //    return tasks;
-        //}
-
-        //[HttpGet("GetEmployeesAsync")]
-        //public async Task<List<Employee>> GetEmployeesAsync()
-        //{
-        //	return await repository.EmployeesAsync;
-        //}
-
-        //[HttpGet("GetTasks")]
-        //public List<TaskEmployee> GetTasks()
-        //{
-        //	return repository.Tasks;
-        //}
-
-        //[HttpGet("GetRoles")]
-        //public List<RoleEmployee> GetRoles()
-        //{
-        //	return repository.Roles;
-        //}
-
         /// <summary>
         /// Отримання всіх співробітників з прилежними властивостями
         /// </summary>
@@ -180,7 +136,6 @@ namespace SignalRServer.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
         }
 
         /// <summary>
